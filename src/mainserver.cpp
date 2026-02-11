@@ -11,7 +11,7 @@ Adafruit_NeoPixel strip(LED_COUNT, NEO_PIN, NEO_GRB + NEO_KHZ800);
 
 String ssid = "ESP32-IOTWebServer";
 String password = "12345678";
-String wifi_ssid = "RD-SEAI_2.4G";
+String wifi_ssid = "";
 String wifi_password = "";
 
 unsigned long connect_start_ms = 0;
@@ -97,8 +97,7 @@ String mainPage() {
 
         function setThreshold(){
           let url = `/threshold?tw=${tw.value}&tc=${tc.value}&hw=${hw.value}&hc=${hc.value}`;
-          fetch(url)
-            .then(()=> document.getElementById('th_msg').innerText = "Saved!");
+          fetch(url);
         }
 
         setInterval(()=>{
@@ -115,57 +114,6 @@ String mainPage() {
 }
 
 
-// String mainPage() {
-//   float temperature = glob_temperature;
-//   float humidity = glob_humidity;
-//   String led1 = led1_state ? "ON" : "OFF";
-//   String led2 = led2_state ? "ON" : "OFF";
-
-//   return R"rawliteral(
-//     <!DOCTYPE html><html><head>
-//       <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-//       <title>ESP32 Dashboard</title>
-//       <style>
-//         body { font-family: Arial;text-align:center; margin:0;}
-//         .container { margin:20px auto; max-width:350px; background:#f9f9f9; border-radius:10px; box-shadow:0 2px 10px #ccc;padding:20px;}
-//         button { padding:10px 15px; margin:10px; font-size:18px;}
-//         #settings { float:right; background:#007bff;color:white; border-radius:4px;}
-//       </style>
-//     </head>
-//     <body>
-//       <div class='container'>
-//         <h2>ESP32 Dashboard</h2>
-//         <div>
-//           <b>Temperature:</b> <span id='temp'>)rawliteral" + String(temperature) + R"rawliteral(</span> &deg;C<br>
-//           <b>Humidity:</b> <span id='hum'>)rawliteral" + String(humidity) + R"rawliteral(</span> %<br>
-//         </div>
-//         <div>
-//             <button onclick='toggleLED(1)'>LED1: <span id="l1">)rawliteral" + led1 + R"rawliteral(</span></button>
-//             <button onclick='toggleLED(2)'>LED2: <span id="l2">)rawliteral" + led2 + R"rawliteral(</span></button>
-//         </div>
-//         <button id="settings" onclick="window.location='/settings'">&#9881; Settings</button>
-//       </div>
-//       <script>
-//         function toggleLED(id) {
-//           fetch('/toggle?led='+id)
-//           .then(response=>response.json())
-//           .then(json=>{
-//             document.getElementById('l1').innerText=json.led1;
-//             document.getElementById('l2').innerText=json.led2;
-//           });
-//         }
-//         setInterval(()=>{
-//           fetch('/sensors')
-//            .then(res=>res.json())
-//            .then(d=>{
-//              document.getElementById('temp').innerText=d.temp;
-//              document.getElementById('hum').innerText=d.hum;
-//            });
-//         },3000);
-//       </script>
-//     </body></html>
-//   )rawliteral";
-// }
 
 String settingsPage() {
   return R"rawliteral(
@@ -280,6 +228,8 @@ void setupServer() {
 }
 
 void startAP() {
+  WiFi.disconnect(true);   // Clear STA
+
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid.c_str(), password.c_str());
   Serial.print("AP IP address: ");
@@ -289,6 +239,8 @@ void startAP() {
 }
 
 void connectToWiFi() {
+  WiFi.disconnect(true);   // Clear previous connection
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(wifi_ssid.c_str(), wifi_password.c_str());
   Serial.print("Connecting to ");
@@ -333,6 +285,9 @@ void main_server_task(void *pvParameters){
       if (WiFi.status() == WL_CONNECTED) {
         Serial.print("STA IP address: ");
         Serial.println(WiFi.localIP());
+
+        xSemaphoreGive(xBinarySemaphoreInternet);
+
         isAPMode = false;
         connecting = false;
       } else if (millis() - connect_start_ms > 10000) { // timeout 10s
@@ -345,3 +300,57 @@ void main_server_task(void *pvParameters){
     vTaskDelay(200); // avoid watchdog reset
   }
 }
+
+
+
+// String mainPage() {
+//   float temperature = glob_temperature;
+//   float humidity = glob_humidity;
+//   String led1 = led1_state ? "ON" : "OFF";
+//   String led2 = led2_state ? "ON" : "OFF";
+
+//   return R"rawliteral(
+//     <!DOCTYPE html><html><head>
+//       <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+//       <title>ESP32 Dashboard</title>
+//       <style>
+//         body { font-family: Arial;text-align:center; margin:0;}
+//         .container { margin:20px auto; max-width:350px; background:#f9f9f9; border-radius:10px; box-shadow:0 2px 10px #ccc;padding:20px;}
+//         button { padding:10px 15px; margin:10px; font-size:18px;}
+//         #settings { float:right; background:#007bff;color:white; border-radius:4px;}
+//       </style>
+//     </head>
+//     <body>
+//       <div class='container'>
+//         <h2>ESP32 Dashboard</h2>
+//         <div>
+//           <b>Temperature:</b> <span id='temp'>)rawliteral" + String(temperature) + R"rawliteral(</span> &deg;C<br>
+//           <b>Humidity:</b> <span id='hum'>)rawliteral" + String(humidity) + R"rawliteral(</span> %<br>
+//         </div>
+//         <div>
+//             <button onclick='toggleLED(1)'>LED1: <span id="l1">)rawliteral" + led1 + R"rawliteral(</span></button>
+//             <button onclick='toggleLED(2)'>LED2: <span id="l2">)rawliteral" + led2 + R"rawliteral(</span></button>
+//         </div>
+//         <button id="settings" onclick="window.location='/settings'">&#9881; Settings</button>
+//       </div>
+//       <script>
+//         function toggleLED(id) {
+//           fetch('/toggle?led='+id)
+//           .then(response=>response.json())
+//           .then(json=>{
+//             document.getElementById('l1').innerText=json.led1;
+//             document.getElementById('l2').innerText=json.led2;
+//           });
+//         }
+//         setInterval(()=>{
+//           fetch('/sensors')
+//            .then(res=>res.json())
+//            .then(d=>{
+//              document.getElementById('temp').innerText=d.temp;
+//              document.getElementById('hum').innerText=d.hum;
+//            });
+//         },3000);
+//       </script>
+//     </body></html>
+//   )rawliteral";
+// }

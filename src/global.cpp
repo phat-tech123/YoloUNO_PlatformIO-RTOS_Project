@@ -28,4 +28,6 @@ float temp_crit = 35.0;
 float humi_warn = 70.0;
 float humi_crit = 80.0;
 
+//Task 6
+SemaphoreHandle_t xBinarySemaphoreInternet = xSemaphoreCreateBinary();
 

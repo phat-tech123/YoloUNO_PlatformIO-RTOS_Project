@@ -75,11 +75,11 @@ void temp_humi_monitor(void *pvParameters){
             xSemaphoreGive(thresholdMutex);
         }
         
-        Serial.print("Humidity: ");
-        Serial.print(humidity);
-        Serial.print("%  Temperature: ");
-        Serial.print(temperature);
-        Serial.println("°C");
+        // Serial.print("Humidity: ");
+        // Serial.print(humidity);
+        // Serial.print("%  Temperature: ");
+        // Serial.print(temperature);
+        // Serial.println("°C");
 
         
         vTaskDelay(5000);
