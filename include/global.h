@@ -2,10 +2,17 @@
 #define __GLOBAL_H__
 
 #include <Arduino.h>
+#include <Adafruit_NeoPixel.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
 
+#define LED_PIN 48
+#define NEO_PIN 45
+#define LED_COUNT 1 
+#define BOOT_PIN 0
+
+extern Adafruit_NeoPixel strip;
 
 //task 1 
 // extern QueueHandle_t tempQueue;

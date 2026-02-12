@@ -6,11 +6,6 @@
 #include <Adafruit_NeoPixel.h>
 #include "global.h"
 
-#define LED_PIN 48
-#define NEO_PIN 45
-#define LED_COUNT 1 
-#define BOOT_PIN 0
-
 
 
 String mainPage();

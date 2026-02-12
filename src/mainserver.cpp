@@ -7,7 +7,7 @@ bool led2_state = false;
 bool isAPMode = true;
 
 WebServer server(80);
-Adafruit_NeoPixel strip(LED_COUNT, NEO_PIN, NEO_GRB + NEO_KHZ800);
+// Adafruit_NeoPixel strip(LED_COUNT, NEO_PIN, NEO_GRB + NEO_KHZ800);
 
 String ssid = "ESP32-IOTWebServer";
 String password = "12345678";

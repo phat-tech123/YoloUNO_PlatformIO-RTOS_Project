@@ -1,5 +1,8 @@
 #include "global.h"
 
+
+Adafruit_NeoPixel strip(LED_COUNT, NEO_PIN, NEO_GRB + NEO_KHZ800);
+
 // Task 1
 // QueueHandle_t tempQueue =  xQueueCreate(1, sizeof(float));
 SemaphoreHandle_t tempCold = xSemaphoreCreateBinary();
