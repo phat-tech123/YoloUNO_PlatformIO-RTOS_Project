@@ -25,7 +25,7 @@ SemaphoreHandle_t sensorMutex = xSemaphoreCreateMutex();
 float glob_temperature = 0;
 float glob_humidity = 0;
 
-SemaphoreHandle_t thresholdMutex = xSemaphoreCreateMutex();
+SemaphoreHandle_t thresholdSemaphore = xSemaphoreCreateBinary();
 float temp_warn = 30.0;
 float temp_crit = 35.0;
 float humi_warn = 70.0;

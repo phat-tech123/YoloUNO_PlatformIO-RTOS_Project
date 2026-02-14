@@ -45,7 +45,7 @@ extern float temp_warn;
 extern float temp_crit;
 extern float humi_warn;
 extern float humi_crit;
-extern SemaphoreHandle_t thresholdMutex;
+extern SemaphoreHandle_t thresholdSemaphore;
 
 //Task 6
 extern SemaphoreHandle_t xBinarySemaphoreInternet;

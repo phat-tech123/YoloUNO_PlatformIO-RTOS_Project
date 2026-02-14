@@ -193,12 +193,12 @@ void handleSensors() {
 }
 
 void handleThreshold() {
-  xSemaphoreTake(thresholdMutex, portMAX_DELAY);
+  // xSemaphoreTake(thresholdMutex, portMAX_DELAY);
   temp_warn = server.arg("tw").toFloat();
   temp_crit = server.arg("tc").toFloat();
   humi_warn = server.arg("hw").toFloat();
   humi_crit = server.arg("hc").toFloat();
-  xSemaphoreGive(thresholdMutex);
+  xSemaphoreGive(thresholdSemaphore);
 
   server.send(200, "application/json", "{\"status\":\"ok\"}");
 }

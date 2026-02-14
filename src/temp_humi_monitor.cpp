@@ -26,7 +26,7 @@ void temp_humi_monitor(void *pvParameters){
         if (isnan(temperature) || isnan(humidity)) {
             Serial.println("Failed to read from DHT sensor!");
             temperature = humidity =  -1;
-            //return;
+            // return;
         }
 
 
@@ -67,12 +67,11 @@ void temp_humi_monitor(void *pvParameters){
         glob_humidity = humidity;
         xSemaphoreGive(sensorMutex);
 
-        if (xSemaphoreTake(thresholdMutex, 0) == pdTRUE) {
+        if (xSemaphoreTake(thresholdSemaphore, 0) == pdTRUE) {
             tw = temp_warn;
             tc = temp_crit;
             hw = humi_warn;
             hc = humi_crit;
-            xSemaphoreGive(thresholdMutex);
         }
         
         // Serial.print("Humidity: ");
@@ -81,7 +80,6 @@ void temp_humi_monitor(void *pvParameters){
         // Serial.print(temperature);
         // Serial.println("°C");
 
-        
         vTaskDelay(5000);
     }
     
