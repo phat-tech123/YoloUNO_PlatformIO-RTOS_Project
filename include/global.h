@@ -40,6 +40,9 @@ extern float glob_temperature;
 extern float glob_humidity;
 extern SemaphoreHandle_t sensorMutex;
 
+extern float ai_prob;
+extern float ai_class;
+extern SemaphoreHandle_t aiMutex;
 
 extern float temp_warn;
 extern float temp_crit;

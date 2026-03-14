@@ -21,13 +21,18 @@ SemaphoreHandle_t humiHot = xSemaphoreCreateBinary();
 QueueHandle_t stateQueue = xQueueCreate(1, sizeof(display_state_t));
 
 //Task 4
+SemaphoreHandle_t aiMutex = xSemaphoreCreateMutex();
+float ai_prob = 0;
+float ai_class = 0;
+
 SemaphoreHandle_t sensorMutex = xSemaphoreCreateMutex();
 float glob_temperature = 0;
 float glob_humidity = 0;
 
+
 SemaphoreHandle_t thresholdSemaphore = xSemaphoreCreateBinary();
 float temp_warn = 30.0;
-float temp_crit = 35.0;
+float temp_crit = 32.0;
 float humi_warn = 70.0;
 float humi_crit = 80.0;
 

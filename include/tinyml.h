@@ -4,6 +4,7 @@
 #include <Arduino.h>
 
 #include "dht_anomaly_model.h"
+#include "environment_classify.h"
 #include "global.h"
 
 #include <TensorFlowLite_ESP32.h>

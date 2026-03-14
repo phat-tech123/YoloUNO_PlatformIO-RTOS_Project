@@ -33,7 +33,7 @@ void temp_humi_monitor(void *pvParameters){
         // Task 1
         if(temperature >= tc){
             xSemaphoreGive(tempHot); 
-        } else if(temperature <= tw){
+        } else if(temperature >= tw){
             xSemaphoreGive(tempCold);   
         } else {
             xSemaphoreGive(tempWarm);  
@@ -42,7 +42,7 @@ void temp_humi_monitor(void *pvParameters){
         // Task 2
         if(humidity >= hc){
             xSemaphoreGive(humiHot); 
-        } else if(humidity <= hw){
+        } else if(humidity >= hw){
             xSemaphoreGive(humiCold);
         } else {
             xSemaphoreGive(humiWarm); 
@@ -53,7 +53,7 @@ void temp_humi_monitor(void *pvParameters){
         if (temperature >= tc || humidity >= hc){
             state = CRITICAL;
         } 
-        else if (temperature <= tw || humidity <= hw){
+        else if (temperature >= tw || humidity >= hw){
             state = WARNING;
         } 
         else{
@@ -90,24 +90,44 @@ void lcd_display(void *pvParameters) {
     while (1) {
         display_state_t state;
         if(xQueueReceive(stateQueue, &state, 0) == pdTRUE){
+            
+            lcd.clear();
+            if (xSemaphoreTake(sensorMutex, portMAX_DELAY) == pdTRUE) {
+                float t = glob_temperature;
+                float h = glob_humidity;
+                
+                lcd.setCursor(0, 0);
+                lcd.print(h);
+                lcd.setCursor(0, 1);
+                lcd.print(t);
+                xSemaphoreGive(sensorMutex);
+            }
             switch(state){
                 case CRITICAL:
                     Serial.print("CRITICAL\n");
+                    lcd.setCursor(7, 0);
+                    lcd.print("CRITICAL");
                     break;
 
                 case WARNING:
                     Serial.print("WARNING\n");
+                    
+                    lcd.setCursor(7, 0);
+                    lcd.print("WARNING");
                     break;
 
                 case NORMAL:
                     Serial.print("NORMAL\n");
+                    
+                    lcd.setCursor(7, 0);
+                    lcd.print("NORMAL");
                     break;
 
                 default:
                     break;
             }
         }
-        
-        vTaskDelay(500);
+        vTaskDelay(5000);
     }
 }
+
